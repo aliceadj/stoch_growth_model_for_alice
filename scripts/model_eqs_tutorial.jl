@@ -1,5 +1,5 @@
 #v1(nr, r, rmm, rmt, rmq, rmr, zmm, zmt, zmq, zmr, nx, q, et, em)                          = 1e8/mass(nr, r, rmm, rmt, rmq, rmr, zmm, zmt, zmq, zmr, nx, q, et, em)
-#mass(nr, r, rmm, rmt, rmq, rmr, zmm, zmt, zmq, zmr, nx, q, et, em)                        = nr * (r + rmm + rmt + rmq + rmr + zmm + zmt + zmq + zmr) + nx * (q + et + em)
+#mass(nr, r, cm, rct, cq, cr, zmm, zmt, zmq, zmr, nx, q, et, em)  = nr * (r + cm + ct + cq + cr + zmm + zmt + zmq + zmr) + nx * (q + et + em)
 
 vimp(et, vt, s0, Kt)           = (et * vt * (s0) / ((Kt) + (s0))) 
 nucat(em, vm, si, Km)           = (em * vm * (si) / (Km + si))
@@ -20,7 +20,7 @@ tlr(a, nx, cx, gmax, Kgamma) = (gamma_fun(gmax, a, Kgamma) / nx) * cx
 tlr_em(a, nx, cx, gmax, Kgamma) = tlr(a, nx, cx, gmax, Kgamma)
 tlr_et(a, nx, cx, gmax, Kgamma) = tlr(a, nx, cx, gmax, Kgamma)
 tlr_q(a, nx, cx, gmax, Kgamma)  = tlr(a, nx, cx, gmax, Kgamma)
-tlr_r(gmax, a, Kgamma, nr, r, rmm, rmt, rmq, rmr, zmm, zmt, zmq, zmr, nx, q, et, em) = (gamma_fun(gmax, a, Kgamma) / nx) * rmr
+tlr_r(gmax, a, Kgamma, nr, r, cm, ct, cq, cr, zmm, zmt, zmq, zmr, nx, q, et, em) = (gamma_fun(gmax, a, Kgamma) / nx) * cr
 
 
 ttrate(a, cr, ct, cm, cq, gmax, Kgamma) = (cr + ct + cm + cq) * gamma_fun(gmax, a, Kgamma)

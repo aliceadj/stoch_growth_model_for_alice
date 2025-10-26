@@ -44,7 +44,6 @@ gm_divC = @reaction_network gm begin
     lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              em => ∅
     lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                               q => ∅
     lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                               r => ∅
-
     lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              si => ∅
     lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                               a => ∅
 
