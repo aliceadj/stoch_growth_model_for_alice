@@ -133,7 +133,7 @@ function getX0(model; ss=false, parametrization="NatComms")
     else
         init = [
 
-            model.a => 10.,
+            model.a => 10., 
             model.si => 0.,
             model.mm => 0.,
             model.mt => 0.,
