@@ -13,7 +13,7 @@ function getPars(units, parametrization; abx = 0.0, ns=9.4810)
     SF = 22000
 
     if parametrization == "PNAs"
-        s0_val               = 1e6
+        s0_val               = 1e4
         ns_val               = 0.5
         vt_val               = 726.0
         vm_val               = 5800.0
