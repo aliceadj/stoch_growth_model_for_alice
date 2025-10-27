@@ -5,11 +5,11 @@ vimp(et, vt, s0, Kt)           = (et * vt * (s0) / ((Kt) + (s0)))
 nucat(em, vm, si, Km)           = (em * vm * (si) / (Km + si))
 
 #tx_mtrtx(w, theta, a; q=nothing, Kq=nothing, nq=nothing) = (w * a / (theta + a)) / (1 + (q / Kq)^nq)
-tx_mtrtx(w, theta, a; q=0.0, Kq=1.0, nq=1.0) = (w * a / (theta + a)) / (1 + (q / Kq)^nq)
-tx_mtr(w, theta, a) = tx_mtrtx(w, theta, a)
+# tx_mtrtx(w, theta, a; q=0.0, Kq=1.0, nq=1.0) = (w * a / (theta + a)) / (1 + (q / Kq)^nq)
+# tx_mtr(w, theta, a) = tx_mtrtx(w, theta, a)
 #tx_q(w, theta, a, q, Kq, nq) = (w * a / (theta + a)) / (1 + (q / (Kq ))^nq)
 tx_q(wq, theta, a; q=0.0, Kq=1.0, nq=1.0) = (wq * a / (theta + a)) / (1 + (q / Kq)^nq)
-tx(w, thetax, a) = w * a / (theta + a)
+tx(w, theta, a) = w * a / (theta + a)
 
 
 ribo_bind(kb, mx, r)           = (kb) * mx * r 
