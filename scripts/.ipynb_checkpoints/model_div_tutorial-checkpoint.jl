@@ -3,16 +3,16 @@ include("model_eqs_tutorial.jl")
 gm_divC = @reaction_network gm begin 
 
     vimp(et, vt, s0, Kt),                                                                       ∅ => si
-    nucat(em, vm, si, Km), si => ∅
-    ns * nucat(em, vm, si, Km), ∅ => a
+    nucat(em, vm, si, Km),                                                                      si => ∅
+    ns * nucat(em, vm, si, Km),                                                                 ∅ => a
 
     ttrate(a, cr, ct, cm, cq, gmax, Kgamma),                                                    a => ∅
 
     # transcription 
-    tx_mtr(we, thetax, a),                                                                      ∅ => mm
-    tx_mtr(we, thetax, a),                                                                      ∅ => mt
-    tx_q(we, thetax, a, q=q, Kq=Kq, nq=nq),                                                     ∅ => mq
-    tx_mtr(we, thetax, a),                                                                      ∅ => mr
+    tx(we, thetax, a),                                                                      ∅ => mm
+    tx(we, thetax, a),                                                                      ∅ => mt
+    tx_q(wq, thetax, a, q=q, Kq=Kq, nq=nq),                                                     ∅ => mq
+    tx(wr, thetax, a),                                                                      ∅ => mr
 
     # ribosome binding and unbinding
     ribo_bind(kb, mm, r),                                                                       mm + r => cm
@@ -26,13 +26,13 @@ gm_divC = @reaction_network gm begin
     ribo_unbind(ku, cr),                                                                        cr => mr + r
 
     # translation
-    tlr_em(a, nx, cm, gmax, Kgamma),                                                            cm => r + em + mm
-    tlr_et(a, nx, ct, gmax, Kgamma),                                                            ct => r + et + mt
-    tlr_q(a, nx, cq, gmax, Kgamma),                                                             cq => r + q + mq
-    tlr_r(gmax, a, Kgamma, nr, r, cm, ct, cq, cr, zmm, zmt, zmq, zmr, nx, q, et, em),       cr => r + r + mr
+    tlr(a, nx, cm, gmax, Kgamma),                                                             cm => r + em + mm
+    tlr(a, nx, ct, gmax, Kgamma),                                                             ct => r + et + mt
+    tlr(a, nx, cq, gmax, Kgamma),                                                             cq => r + q + mq
+    tlr(a, nx, cr, gmax, Kgamma),                                                             cr => r + mr + r
 
     # dilution
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              mt => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              mt => ∅   # does this multiply lambda by mt....
     lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                             mm => ∅
     lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              mq => ∅
     lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                             mr => ∅     
