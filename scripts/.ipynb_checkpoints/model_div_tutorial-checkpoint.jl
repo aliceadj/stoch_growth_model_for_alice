@@ -32,20 +32,20 @@ gm_divC = @reaction_network gm begin
     tlr(a, nx, cr, gmax, Kgamma),                                                             cr => r + mr + r
 
     # dilution
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              mt => ∅   # does this multiply lambda by mt....
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                             mm => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              mq => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                             mr => ∅     
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              ct => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              cm => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              cq => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                             cr => ∅    
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              et => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              em => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                               q => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                               r => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                              si => ∅
-    lam(a, cr, ct, cm, cq, gmax, Kgamma, M),                                               a => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                              mt => ∅   
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                             mm => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                              mq => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                             mr => ∅     
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                              ct => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                              cm => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                              cq => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                             cr => ∅    
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                              et => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                              em => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                               q => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                               r => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                              si => ∅
+    lam(a, cr, ct, cm, cq, gmax, Kgamma, M, nr, nx, r, zmm, zmt, zmq, zmr, q, et, em),                                               a => ∅
 
     # degradation
     dm * mm,                                                                                      mm => ∅
