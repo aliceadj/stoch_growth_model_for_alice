@@ -1,4 +1,4 @@
-function getPars(units, parametrization; abx = 0.0, ns=9.4810)
+function getPars(units, parametrization; abx = 0.0, ns=0.5)
 
     NA = 602214085700000000519317.96307935
 

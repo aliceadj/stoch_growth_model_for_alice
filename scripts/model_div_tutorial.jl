@@ -4,14 +4,14 @@ gm_divC = @reaction_network gm begin
 
     vimp(et, vt, s0, Kt),                                                                       ∅ => si
     nucat(em, vm, si, Km),                                                                      si => ∅
-    ns * nucat(em, vm, si, Km),                                                                 ∅ => a
+    vcat_a(em, vm, si, Km, ns),                                                                 ∅ => a
 
     ttrate(a, cr, ct, cm, cq, gmax, Kgamma),                                                    a => ∅
 
     # transcription 
     tx(we, thetax, a),                                                                      ∅ => mm
     tx(we, thetax, a),                                                                      ∅ => mt
-    tx_q(wq, thetax, a, q=q, Kq=Kq, nq=nq),                                                     ∅ => mq
+    tx_q(wq, thetax, a, q, Kq, nq),                                                     ∅ => mq
     tx(wr, thetax, a),                                                                      ∅ => mr
 
     # ribosome binding and unbinding
