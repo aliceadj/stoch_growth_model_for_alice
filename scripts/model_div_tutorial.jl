@@ -12,7 +12,7 @@ gm_divC = @reaction_network gm begin
     tx(we, thetax, a),                                                                      ∅ => mm
     tx(we, thetax, a),                                                                      ∅ => mt
     tx_q(wq, thetax, a, q, Kq, nq),                                                     ∅ => mq
-    tx(wr, thetax, a),                                                                      ∅ => mr
+    tx(wr, thetar, a),                                                                      ∅ => mr
 
     # ribosome binding and unbinding
     ribo_bind(kb, mm, r),                                                                       mm + r => cm
