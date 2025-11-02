@@ -1,4 +1,4 @@
-function getPars(units, parametrization; abx = 0.0, ns=9.4810)
+function getPars(units, parametrization; abx = 0.0, ns=0.5)
 
     NA = 602214085700000000519317.96307935
 
@@ -13,7 +13,7 @@ function getPars(units, parametrization; abx = 0.0, ns=9.4810)
     SF = 22000
 
     if parametrization == "PNAs"
-        s0_val               = 1e6
+        s0_val               = 1e4
         ns_val               = 0.5
         vt_val               = 726.0
         vm_val               = 5800.0
@@ -92,10 +92,10 @@ function getX0(model; ss=false, parametrization="NatComms")
                 model.mt => 10,#9.92,
                 model.mq => 332,#331.63,
                 model.mr => 36,#35.57,
-                model.rmm => 69,#69.01,
-                model.rmt => 69,#69.01,
-                model.rmq => 2307,#2306.51,
-                model.rmr => 802,#801.82,
+                model.cm => 69,#69.01,
+                model.ct => 69,#69.01,
+                model.cq => 2307,#2306.51,
+                model.cr => 802,#801.82,
                 model.em => 7086,#7086.27,
                 model.et => 7086,#7086.27,
                 model.q => 2e5,#2.3683e5,
@@ -133,7 +133,7 @@ function getX0(model; ss=false, parametrization="NatComms")
     else
         init = [
 
-            model.a => 10.,
+            model.a => 10., 
             model.si => 0.,
             model.mm => 0.,
             model.mt => 0.,
