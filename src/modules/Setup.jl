@@ -1,4 +1,5 @@
 module Setup
+using Distributions
 
 export getPars, getX0, find_project_root
 

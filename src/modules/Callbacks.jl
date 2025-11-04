@@ -1,11 +1,12 @@
 module Callbacks
+using Distributions
 
 export SimState, make_callbacks
 
 include("StochModel.jl")
 using .StochModel: mass
 
-using DifferentialEquations
+using DifferentialEquations, Distributions
 
 mutable struct SimState
     fork_creation_times::Vector{Float64}

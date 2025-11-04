@@ -1,4 +1,5 @@
 module Simulate
+using Distributions
 
 export define_jump_prob
 
@@ -11,7 +12,7 @@ using .Setup: getPars, getX0
 include("DetModel.jl")
 using .DetModel: det_growth_model
 
-using DifferentialEquations
+using DifferentialEquations, Distributions
 
 function define_jump_prob(; units="molecs", parameterization="NatComms", ns=0.5, abx=0.0, ss=true, tspan=(0.0,1e5))
 
