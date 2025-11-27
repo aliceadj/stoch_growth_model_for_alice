@@ -11,9 +11,9 @@ if Sys.KERNEL == :Linux
 elseif Sys.KERNEL == :Darwin
     Pkg.activate(project_root)
 end
+
 abx_val = [2,4,8,12]
 ns_vec = [0.7481584182562523, 1.7623942844141665, 0.45586113648724746, 1.0365785284612912] # according to Christoph's data (see ns_estimation in src/models/catalyst_model)
-# change to antibiotic values for ns: 2,4,8,12
 
 # add workers so each simulation runs on a different process
 using Distributed
@@ -44,18 +44,19 @@ mkpath(dirname(log_file))
 # set initial conditions to be the steady states of the ODE simulation in the same conditions
 init_conds = Dict{Float64,Vector{Float64}}()
 for ns in ns_vec
-    sol = simulate_ODE(; units="molecs", parameterization="NatComms", abx=0.0, ns=ns)
+    sol = simulate_ODE(; units="molecs", parameterization="NatComms", abx=abx_val, ns=ns)
     init_conds[ns] = sol[end]
 end
 
 # load in jump problem
-jump_prob = define_jump_prob(units="molecs", parameterization="NatComms", tspan=(0.0,1e5)) #1e5 or 1
+jump_prob = define_jump_prob(units="molecs", parameterization="NatComms", tspan=(0.0,1)) #1e5
 
 @everywhere jump_prob_template = $jump_prob
 
 println("Starting simulations at $(date)")
 @sync @distributed for i in eachindex(ns_vec)
-    # sets a seed to make simulations reproducible
+    @sync @distributed for j in eachindex(abx_val)
+        # sets a seed to make simulations reproducible
     Random.seed!(i)
 
     state = SimState([],[],[])
@@ -63,14 +64,14 @@ println("Starting simulations at $(date)")
 
     # get parameter values for this run
     ns_val = ns_vec[i]
-    abx_val = 0.0
+    abx_val = abx_val[j]
 
     new_params = getPars("molecs", "NatComms"; ns=ns_val, abx=abx_val)[1:22]
     # remake the jump problem with new parameters and initial conditions
     new_prob = remake(jump_prob_template, p=new_params, u0=init_conds[ns_val])
 
     start_time = Dates.now()
-    println("Starting run for ns=$(ns_val), abx=0.0 at $(Dates.format(start_time, "HH:MM:SS"))")
+    println("Starting run for ns=$(ns_val), abx=$(abx_val) at $(Dates.format(start_time, "HH:MM:SS"))")
     run_time = @elapsed sol = solve(new_prob, callback=CallbackSet(callbacks.fork_cb, callbacks.division_cb, callbacks.cellcycle_cb), saveat=10/60)
     end_time = Dates.now()
 
@@ -89,6 +90,7 @@ println("Starting simulations at $(date)")
     Arrow.write(joinpath(savepath, "seed$(i)_ns$(ns_val)_abx$(abx_val).arrow"), df, compress=:lz4)
 
     println("Finished run for ns=$(ns_val), abx=$(abx_val) at $(Dates.format(end_time, "HH:MM:SS"))")
+    
 end
 println("Finished simulations at $(Dates.format(Dates.now(), "HH:MM:SS"))")
 
