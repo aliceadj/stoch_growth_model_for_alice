@@ -49,7 +49,7 @@ for ns in ns_vec
 end
 
 # load in jump problem
-jump_prob = define_jump_prob(units="molecs", parameterization="NatComms", tspan=(0.0,1)) #1e5
+jump_prob = define_jump_prob(units="molecs", parameterization="NatComms", tspan=(0.0,1e5)) #1e5 or 1
 
 @everywhere jump_prob_template = $jump_prob
 
