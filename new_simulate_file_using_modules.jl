@@ -11,8 +11,9 @@ if Sys.KERNEL == :Linux
 elseif Sys.KERNEL == :Darwin
     Pkg.activate(project_root)
 end
-
+abx_val = [2,4,8,12]
 ns_vec = [0.7481584182562523, 1.7623942844141665, 0.45586113648724746, 1.0365785284612912] # according to Christoph's data (see ns_estimation in src/models/catalyst_model)
+# change to antibiotic values for ns: 2,4,8,12
 
 # add workers so each simulation runs on a different process
 using Distributed
