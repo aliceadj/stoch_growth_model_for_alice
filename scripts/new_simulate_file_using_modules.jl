@@ -1,4 +1,4 @@
-include("src/modules/Setup.jl")
+include("../src/modules/Setup.jl")
 using .Setup: find_project_root
 
 # get the root of the project so files are saved in the correct location
