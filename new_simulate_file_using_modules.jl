@@ -12,12 +12,12 @@ elseif Sys.KERNEL == :Darwin
     Pkg.activate(project_root)
 end
 
-abx_val = [2,4,8,12]
+abx_list = [2,4,8,12]
 ns_vec = [0.7481584182562523, 1.7623942844141665, 0.45586113648724746, 1.0365785284612912] # according to Christoph's data (see ns_estimation in src/models/catalyst_model)
 
 # add workers so each simulation runs on a different process
 using Distributed
-nworkers1 = length(ns_vec)
+nworkers1 = length(ns_vec) * length(abx_list)
 addprocs(nworkers1)
 
 # load in things across all workers
@@ -44,53 +44,75 @@ mkpath(dirname(log_file))
 # set initial conditions to be the steady states of the ODE simulation in the same conditions
 init_conds = Dict{Float64,Vector{Float64}}()
 for ns in ns_vec
-    sol = simulate_ODE(; units="molecs", parameterization="NatComms", abx=abx_val, ns=ns)
-    init_conds[ns] = sol[end]
+    for abx in abx_list
+        sol = simulate_ODE(; units="molecs",
+                            parameterization="NatComms",
+                            abx=abx,
+                            ns=ns)
+        init_conds_local[(ns, abx)] = sol[end]
+    end
 end
 
 # load in jump problem
+base_ns  = ns_vec[1]
+base_abx = abx_list[1]
+
+base_params = getPars("molecs", "NatComms"; ns=base_ns, abx=base_abx)[1:22]
+
 jump_prob = define_jump_prob(units="molecs", parameterization="NatComms", tspan=(0.0,1)) #1e5
+param_combinations = [(ns, abx) for ns in ns_vec for abx in abx_list]
 
 @everywhere jump_prob_template = $jump_prob
 
 println("Starting simulations at $(date)")
-@sync @distributed for i in eachindex(ns_vec)
-    @sync @distributed for j in eachindex(abx_val)
-        # sets a seed to make simulations reproducible
-    Random.seed!(i)
+@sync @distributed for idx in eachindex(param_combinations)
+    ns_val, abx_val = param_combinations[idx]
 
-    state = SimState([],[],[])
+    # Reproducible randomness
+    Random.seed!(idx)
+
+    state = SimState([], [], [])
     callbacks = make_callbacks(state)
 
-    # get parameter values for this run
-    ns_val = ns_vec[i]
-    abx_val = abx_val[j]
-
+    # Parameters for this run
     new_params = getPars("molecs", "NatComms"; ns=ns_val, abx=abx_val)[1:22]
-    # remake the jump problem with new parameters and initial conditions
-    new_prob = remake(jump_prob_template, p=new_params, u0=init_conds[ns_val])
+    u0 = init_conds[(ns_val, abx_val)]
+
+    new_prob = remake(jump_prob_template, p=new_params, u0=u0)
 
     start_time = Dates.now()
     println("Starting run for ns=$(ns_val), abx=$(abx_val) at $(Dates.format(start_time, "HH:MM:SS"))")
-    run_time = @elapsed sol = solve(new_prob, callback=CallbackSet(callbacks.fork_cb, callbacks.division_cb, callbacks.cellcycle_cb), saveat=10/60)
+
+    run_time = @elapsed begin
+        sol = solve(new_prob,
+                    callback=CallbackSet(callbacks.fork_cb,
+                                         callbacks.division_cb,
+                                         callbacks.cellcycle_cb),
+                    saveat=10/60)
+        # Save solution to Arrow
+        df = DataFrame(sol)
+
+        savepath = $save_root
+        mkpath(savepath)
+
+        Arrow.write(joinpath(savepath,
+                             "seed$(idx)_ns$(ns_val)_abx$(abx_val).arrow"),
+                    df, compress=:lz4)
+    end
+
     end_time = Dates.now()
 
-    df = DataFrame(sol)
+    # Log entry (note: multiple workers append; that's ok for simple logs)
+    log_entry = "$(Dates.format(end_time, "yyyy-mm-ddTHH:MM:SS.sss")): " *
+                "abx=$(abx_val), ns=$(ns_val), " *
+                "time=$(round(run_time/60, digits=2)) minutes, " *
+                "$(round(run_time/60/60, digits=2)) hours"
 
-    # record time it took for each simulation in a file 
-    log_entry = "$(Dates.format(end_time, "yyyy-mm-ddTHH:MM:SS.sss")): abx=$(abx_val), ns=$(ns_val), time=$(round(run_time/60, digits=2)) minutes, $(round(run_time/60/60, digits=2)) hours"
-    
-    open(log_file, "a") do f
+    open($log_file, "a") do f
         println(f, log_entry)
     end
 
-    # save the results in a folder
-    savepath = joinpath(project_root, "simulation_data/$date")
-    mkpath(savepath)  
-    Arrow.write(joinpath(savepath, "seed$(i)_ns$(ns_val)_abx$(abx_val).arrow"), df, compress=:lz4)
-
     println("Finished run for ns=$(ns_val), abx=$(abx_val) at $(Dates.format(end_time, "HH:MM:SS"))")
-    
 end
 println("Finished simulations at $(Dates.format(Dates.now(), "HH:MM:SS"))")
 
